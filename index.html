@@ -146,6 +146,18 @@
   }
   .passo b{display:block;font-size:.98rem;margin-bottom:3px}
   .passo span{font-size:.9rem;color:var(--texto-2)}
+  /* Endereço para digitar no Downloader da TV Box, letra por letra, no controle
+     remoto. Fonte monoespaçada e grande de propósito: aqui um "l" confundido com
+     "1" vira uma ligação de suporte. */
+  .link-curto{
+    display:inline-block;margin:9px 0 6px;
+    font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    font-size:clamp(.98rem,3.4vw,1.18rem);font-weight:700;letter-spacing:.4px;
+    color:#D9CCFF;background:#1B1440;border:1px solid var(--roxo);
+    border-radius:9px;padding:9px 15px;
+    overflow-wrap:anywhere;
+  }
+  .dica-link{display:block;font-size:.83rem !important;color:var(--texto-3) !important}
 
   /* ── Requisitos ──────────────────────────────────────────── */
   .req{
@@ -328,8 +340,10 @@
             <span>Vá em Configurações → Segurança e ative "Fontes desconhecidas" para o Downloader.</span>
           </div></div>
           <div class="passo"><div class="num">3</div><div>
-            <b>Digite o endereço</b>
-            <span>Abra o Downloader e digite o link curto que aparece no botão de download desta página.</span>
+            <b>Digite este endereço</b>
+            <span>Abra o Downloader e digite exatamente:</span>
+            <div class="link-curto">alpha-tv-pro.vercel.app/apk</div>
+            <span class="dica-link">Sem www, sem https. O download começa sozinho.</span>
           </div></div>
           <div class="passo"><div class="num">4</div><div>
             <b>Instale e abra</b>

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/apk",
+      "destination": "https://github.com/brunoopaess22/alpha-tv-pro/releases/latest/download/AlphaTVPro.apk",
+      "permanent": false
+    }
+  ]
+}
