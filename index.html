@@ -158,6 +158,16 @@
     overflow-wrap:anywhere;
   }
   .dica-link{display:block;font-size:.83rem !important;color:var(--texto-3) !important}
+  /* Plano B do passo a passo. Fica visualmente abaixo dos passos numerados de
+     propósito: quem tem navegador não precisa ler, quem não tem acha na hora. */
+  .nota-b{
+    max-width:640px;margin:20px auto 0;
+    background:var(--surface-2);border:1px solid var(--border);
+    border-left:3px solid var(--roxo);border-radius:12px;
+    padding:16px 20px;font-size:.88rem;color:var(--texto-2);
+  }
+  .nota-b b{display:block;color:var(--texto);margin-bottom:4px;font-size:.93rem}
+  .nota-b strong{color:#D9CCFF;font-family:ui-monospace,Consolas,monospace}
 
   /* ── Requisitos ──────────────────────────────────────────── */
   .req{
@@ -332,23 +342,31 @@
       <div class="painel" id="p-tv" role="tabpanel" aria-labelledby="t-tv">
         <div class="passos">
           <div class="passo"><div class="num">1</div><div>
-            <b>Instale o Downloader</b>
-            <span>Na loja de apps da sua TV Box, procure por <em>Downloader</em> (ícone laranja) e instale.</span>
+            <b>Abra o navegador da sua TV Box</b>
+            <span>E digite exatamente este endereço:</span>
+            <div class="link-curto">alpha-tv-pro.vercel.app/apk</div>
+            <span class="dica-link">Sem www e sem https. O download começa sozinho, sem abrir página nenhuma.</span>
           </div></div>
           <div class="passo"><div class="num">2</div><div>
             <b>Libere a instalação</b>
-            <span>Vá em Configurações → Segurança e ative "Fontes desconhecidas" para o Downloader.</span>
+            <span>O aparelho vai avisar que não pode instalar de fonte desconhecida.
+                  Toque em Configurações e autorize — é só uma vez.</span>
           </div></div>
           <div class="passo"><div class="num">3</div><div>
-            <b>Digite este endereço</b>
-            <span>Abra o Downloader e digite exatamente:</span>
-            <div class="link-curto">alpha-tv-pro.vercel.app/apk</div>
-            <span class="dica-link">Sem www, sem https. O download começa sozinho.</span>
+            <b>Instale</b>
+            <span>Quando o download terminar, toque no arquivo e depois em Instalar.</span>
           </div></div>
           <div class="passo"><div class="num">4</div><div>
-            <b>Instale e abra</b>
-            <span>Quando terminar de baixar, toque em Instalar. Depois é só entrar com os dados do seu provedor.</span>
+            <b>Entre com seu provedor</b>
+            <span>Abra o app e informe servidor, usuário e senha — ou a URL da sua lista M3U.</span>
           </div></div>
+        </div>
+
+        <div class="nota-b">
+          <b>Sua TV Box não tem navegador?</b>
+          Acontece bastante em Android TV. Na loja de apps do aparelho, procure por
+          <em>Downloader</em> (ícone laranja), instale, e digite o mesmo endereço
+          <strong>alpha-tv-pro.vercel.app/apk</strong> dentro dele. Funciona igual.
         </div>
       </div>
 
