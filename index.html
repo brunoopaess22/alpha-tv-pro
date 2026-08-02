@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alpha TV Pro — Player IPTV para Android e TV Box</title>
+<meta name="description" content="Player IPTV para Android e TV Box. Compatível com Xtream Codes e listas M3U. Use com o seu provedor.">
+<meta name="theme-color" content="#07080F">
+
+<meta property="og:title" content="Alpha TV Pro — Player IPTV">
+<meta property="og:description" content="Player IPTV para Android e TV Box. Compatível com Xtream Codes e listas M3U.">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070810'/%3E%3Cpath d='M11 8l8 8-8 8' stroke='%238B5CF6' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<style>
+  :root{
+    --bg:#07080F;
+    --surface:#0E1020;
+    --surface-2:#141731;
+    --border:#232744;
+    --roxo:#6C3FF5;
+    --roxo-claro:#8B5CF6;
+    --texto:#F2F3FA;
+    --texto-2:#A6ABC8;
+    --texto-3:#6F7590;
+    --raio:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--texto);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit}
+  .wrap{width:100%;max-width:1060px;margin:0 auto;padding:0 22px}
+
+  /* ── Cabeçalho ───────────────────────────────────────────── */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(7,8,15,.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .marca{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.3px;font-size:1.06rem}
+  .marca svg{flex:0 0 auto}
+  .nav-links{display:flex;gap:26px;font-size:.92rem;color:var(--texto-2)}
+  .nav-links a{text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--texto)}
+  @media(max-width:720px){.nav-links{display:none}}
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  .hero{position:relative;padding:88px 0 76px;text-align:center;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;top:-340px;left:50%;transform:translateX(-50%);
+    width:900px;height:640px;pointer-events:none;
+    background:radial-gradient(circle,rgba(108,63,245,.30) 0%,rgba(108,63,245,0) 68%);
+  }
+  .hero > *{position:relative}
+  .selo{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--surface-2);border:1px solid var(--border);
+    padding:6px 15px;border-radius:999px;
+    font-size:.8rem;color:var(--texto-2);margin-bottom:26px;
+  }
+  .ponto{width:7px;height:7px;border-radius:50%;background:#3ED598;box-shadow:0 0 9px #3ED598}
+  h1{
+    font-size:clamp(2.2rem,6.4vw,4rem);
+    line-height:1.08;letter-spacing:-2px;font-weight:800;margin-bottom:20px;
+  }
+  h1 .grad{
+    background:linear-gradient(120deg,var(--roxo-claro),#C4B0FF);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{font-size:clamp(1rem,2.2vw,1.16rem);color:var(--texto-2);max-width:600px;margin:0 auto 38px}
+
+  .btn-baixar{
+    display:inline-flex;align-items:center;gap:12px;
+    background:linear-gradient(135deg,var(--roxo),var(--roxo-claro));
+    color:#fff;text-decoration:none;font-weight:700;font-size:1.08rem;
+    padding:17px 38px;border-radius:14px;
+    box-shadow:0 12px 34px rgba(108,63,245,.42);
+    transition:transform .16s,box-shadow .16s;
+  }
+  .btn-baixar:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(108,63,245,.55)}
+  .btn-baixar:active{transform:translateY(0)}
+
+  .meta{margin-top:16px;font-size:.87rem;color:var(--texto-3)}
+  .meta strong{color:var(--texto-2);font-weight:600}
+
+  .aviso-erro{
+    display:none;margin:18px auto 0;max-width:460px;
+    background:rgba(255,180,60,.09);border:1px solid rgba(255,180,60,.28);
+    color:#FFD08A;border-radius:12px;padding:12px 16px;font-size:.86rem;
+  }
+
+  /* ── Seções ──────────────────────────────────────────────── */
+  section{padding:74px 0;border-top:1px solid var(--border)}
+  .titulo{text-align:center;margin-bottom:48px}
+  .titulo h2{font-size:clamp(1.55rem,3.6vw,2.1rem);letter-spacing:-.8px;font-weight:800;margin-bottom:10px}
+  .titulo p{color:var(--texto-2);max-width:520px;margin:0 auto}
+
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:18px}
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--raio);padding:26px 24px;
+    transition:border-color .18s,transform .18s;
+  }
+  .card:hover{border-color:var(--roxo);transform:translateY(-3px)}
+  .card .ico{
+    width:42px;height:42px;border-radius:11px;
+    background:var(--surface-2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  }
+  .card h3{font-size:1.02rem;font-weight:700;margin-bottom:7px}
+  .card p{font-size:.91rem;color:var(--texto-2)}
+
+  /* ── Instalação ──────────────────────────────────────────── */
+  .abas{display:flex;gap:10px;justify-content:center;margin-bottom:34px;flex-wrap:wrap}
+  .aba{
+    background:var(--surface);border:1px solid var(--border);color:var(--texto-2);
+    padding:11px 26px;border-radius:11px;cursor:pointer;font-size:.94rem;
+    font-weight:600;font-family:inherit;transition:.16s;
+  }
+  .aba:hover{color:var(--texto)}
+  .aba[aria-selected="true"]{
+    background:var(--roxo);border-color:var(--roxo);color:#fff;
+  }
+  .painel[hidden]{display:none}
+  .passos{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  .passo{
+    display:flex;gap:17px;align-items:flex-start;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:19px 22px;
+  }
+  .num{
+    flex:0 0 30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--roxo),var(--roxo-claro));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:.86rem;color:#fff;
+  }
+  .passo b{display:block;font-size:.98rem;margin-bottom:3px}
+  .passo span{font-size:.9rem;color:var(--texto-2)}
+
+  /* ── Requisitos ──────────────────────────────────────────── */
+  .req{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;
+    max-width:830px;margin:0 auto;
+  }
+  .req div{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:22px;text-align:center;
+  }
+  .req b{display:block;font-size:1.24rem;font-weight:800;margin-bottom:4px}
+  .req span{font-size:.85rem;color:var(--texto-3)}
+
+  /* ── FAQ ─────────────────────────────────────────────────── */
+  .faq{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  details{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:19px 22px;
+  }
+  details[open]{border-color:var(--roxo)}
+  summary{
+    cursor:pointer;font-weight:650;font-size:.98rem;list-style:none;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--roxo-claro);font-size:1.35rem;line-height:1;font-weight:400}
+  details[open] summary::after{content:"−"}
+  details p{margin-top:13px;font-size:.92rem;color:var(--texto-2)}
+
+  /* ── CTA final + rodapé ──────────────────────────────────── */
+  .cta{text-align:center}
+  footer{
+    border-top:1px solid var(--border);padding:38px 0;
+    text-align:center;font-size:.84rem;color:var(--texto-3);
+  }
+  footer .marca{justify-content:center;margin-bottom:14px;font-size:.98rem}
+  .legal{max-width:620px;margin:14px auto 0;line-height:1.65}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="marca">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#141731"/>
+        <path d="M11 8l8 8-8 8" stroke="#8B5CF6" stroke-width="3.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Alpha TV Pro
+    </div>
+    <nav class="nav-links">
+      <a href="#recursos">Recursos</a>
+      <a href="#instalar">Como instalar</a>
+      <a href="#requisitos">Requisitos</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ── HERO ──────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="selo"><span class="ponto"></span> Versão <span id="selo-versao">estável</span> disponível</div>
+
+      <h1>Seu IPTV do jeito<br><span class="grad">que deveria ser</span></h1>
+
+      <p class="sub">
+        Player para Android e TV Box compatível com Xtream Codes e listas M3U.
+        Rápido para abrir canal, estável no futebol, e feito para funcionar
+        com o controle remoto — não contra ele.
+      </p>
+
+      <a class="btn-baixar" id="btn-baixar" href="#" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Baixar APK
+      </a>
+
+      <p class="meta" id="meta">Carregando informações da versão…</p>
+
+      <div class="aviso-erro" id="aviso-erro">
+        Não consegui carregar a versão automaticamente. O botão continua funcionando
+        e sempre entrega a mais recente.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RECURSOS ──────────────────────────────────────────── -->
+  <section id="recursos">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>O que ele faz de diferente</h2>
+        <p>Recursos que existem porque doíam de verdade no uso do dia a dia.</p>
+      </div>
+
+      <div class="grade">
+        <div class="card">
+          <div class="ico">🔀</div>
+          <h3>Dois motores de vídeo</h3>
+          <p>Se um canal não abre em um, o app troca de motor sozinho e tenta no outro.
+             Você escolhe o padrão nas configurações.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📡</div>
+          <h3>Troca de fonte automática</h3>
+          <p>Quando um canal engasga, ele muda para outra versão do mesmo canal —
+             que costuma sair por outro servidor e voltar a funcionar.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔢</div>
+          <h3>Digite o número do canal</h3>
+          <p>Como TV de verdade: digitou o número no controle, caiu no canal.
+             E uma tecla volta para o canal anterior.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🩺</div>
+          <h3>Diagnóstico "Por que travou?"</h3>
+          <p>Um toque e o app testa a conexão e diz de quem é a culpa:
+             do servidor, da sua internet, ou da conta.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📺</div>
+          <h3>Guia de programação</h3>
+          <p>EPG com grade horária, o que está passando agora e o que vem depois,
+             em lista no celular e em grade na TV.</p>
+        </div>
+        <div class="card">
+          <div class="ico">⏪</div>
+          <h3>Rever programas</h3>
+          <p>Nos canais que o seu provedor oferece catch-up, dá para voltar
+             e assistir o que já passou.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔒</div>
+          <h3>Controle dos pais</h3>
+          <p>PIN para bloquear categorias adultas. Fica travado até você liberar,
+             inclusive na troca rápida de canais.</p>
+        </div>
+        <div class="card">
+          <div class="ico">▶️</div>
+          <h3>Continuar assistindo</h3>
+          <p>Filme e série voltam exatamente de onde você parou —
+             mesmo se a internet cair no meio.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🚫</div>
+          <h3>Sem anúncios</h3>
+          <p>Nenhuma propaganda, nenhum rastreador. O app fala só com o
+             servidor do seu provedor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INSTALAR ──────────────────────────────────────────── -->
+  <section id="instalar">
+    <div class="wrap">
+      <div class="titulo">
+        <h2>Como instalar</h2>
+        <p>Leva uns 2 minutos. Escolha o seu aparelho.</p>
+      </div>
+
+      <div class="abas" role="tablist">
+        <button class="aba" role="tab" aria-selected="true"  aria-controls="p-tv"  id="t-tv">📺 TV Box / Android TV</button>
+        <button class="aba" role="tab" aria-selected="false" aria-controls="p-cel" id="t-cel">📱 Celular</button>
+      </div>
+
+      <div class="painel" id="p-tv" role="tabpanel" aria-labelledby="t-tv">
+        <div class="passos">
+          <div class="passo"><div class="num">1</div><div>
+            <b>Instale o Downloader</b>
+            <span>Na loja de apps da sua TV Box, procure por <em>Downloader</em> (ícone laranja) e instale.</span>
+          </div></div>
+          <div class="passo"><div class="num">2</div><div>
+            <b>Libere a instalação</b>
+            <span>Vá em Configurações → Segurança e ative "Fontes desconhecidas" para o Downloader.</span>
+          </div></div>
+          <div class="passo"><div class="num">3</div><div>
+            <b>Digite o endereço</b>
+            <span>Abra o Downloader e digite o link curto que aparece no botão de download desta página.</span>
+          </div></div>
+          <div class="passo"><div class="num">4</div><div>
+            <b>Instale e abra</b>
+            <span>Quando terminar de baixar, toque em Instalar. Depois é só entrar com os dados do seu provedor.</span>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="painel" id="p-cel" role="tabpanel" aria-labelledby="t-cel" hidden>
+        <div class="passos">
+          <div class="passo"><div class="num">1</div><div>
+            <b>Baixe o APK</b>
+            <span>Toque no botão "Baixar APK" no topo desta página.</span>
+          </div></div>
+          <div class="passo"><div class="num">2</div><div>
+            <b>Permita a instalação</b>
+            <span>O Android vai perguntar se permite instalar apps desta fonte. Toque em Configurações e ative.</span>
+          </div></div>
+          <div class="passo"><div class="num">3</div><div>
+            <b>Instale</b>
+            <span>Volte e toque em Instalar. Se aparecer aviso do Play Protect, escolha "Instalar mesmo assim".</span>
+          </div></div>
+          <div class="passo"><div class="num">4</div><div>
+            <b>Entre com seu provedor</b>
+            <span>Abra o app e informe servidor, usuário e senha — ou a URL da sua lista M3U.</span>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REQUISITOS ────────────────────────────────────────── -->
+  <section id="requisitos">
+    <div class="wrap">
+      <div class="titulo"><h2>Requisitos</h2></div>
+      <div class="req">
+        <div><b>Android 6+</b><span>funciona em aparelho antigo</span></div>
+        <div><b>TV Box &amp; Celular</b><span>uma tela para cada</span></div>
+        <div><b>Xtream / M3U</b><span>os dois formatos</span></div>
+        <div><b>~20 MB</b><span>leve para instalar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────────────── -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="titulo"><h2>Dúvidas frequentes</h2></div>
+      <div class="faq">
+        <details open>
+          <summary>O app vem com canais ou filmes?</summary>
+          <p>Não. O Alpha TV Pro é apenas o <strong>reprodutor</strong> — igual a um navegador,
+             que não vem com sites dentro. Você precisa ter uma conta de um provedor de IPTV
+             e informar os dados de acesso dele no app.</p>
+        </details>
+        <details>
+          <summary>Por que não está na Play Store?</summary>
+          <p>Aplicativos de player IPTV são removidos da loja com frequência, mesmo sem
+             fornecerem conteúdo. Distribuir por aqui deixa o app estável e faz as
+             atualizações chegarem na hora.</p>
+        </details>
+        <details>
+          <summary>É seguro instalar fora da loja?</summary>
+          <p>O APK desta página é publicado direto no GitHub e assinado com o mesmo
+             certificado em todas as versões — o próprio Android bloqueia a atualização
+             se alguém tentar trocar o arquivo por outro.</p>
+        </details>
+        <details>
+          <summary>Como faço para atualizar depois?</summary>
+          <p>Volte nesta página e baixe de novo — o botão sempre entrega a versão mais
+             recente. Instale por cima: seus dados de login, favoritos e progresso
+             dos filmes continuam lá.</p>
+        </details>
+        <details>
+          <summary>Trava ou demora para abrir canal. É o app?</summary>
+          <p>Pode não ser. O app tem um diagnóstico embutido: durante a transmissão,
+             toque no ícone de rede e ele testa a conexão, mede a velocidade real que o
+             servidor está entregando e diz onde está o problema.</p>
+        </details>
+        <details>
+          <summary>Funciona com controle remoto?</summary>
+          <p>Sim, foi feito para isso. Toda a navegação funciona pelo D-pad, e no player
+             você troca de canal com as setas, digita o número do canal ou volta ao canal
+             anterior com uma tecla.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ─────────────────────────────────────────── -->
+  <section class="cta">
+    <div class="wrap">
+      <div class="titulo" style="margin-bottom:30px">
+        <h2>Pronto para começar?</h2>
+        <p>Download direto, sem cadastro e sem anúncio.</p>
+      </div>
+      <a class="btn-baixar" id="btn-baixar-2" href="#" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Baixar Alpha TV Pro
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="marca">
+      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#141731"/>
+        <path d="M11 8l8 8-8 8" stroke="#8B5CF6" stroke-width="3.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Alpha TV Pro
+    </div>
+    <p>© <span id="ano"></span> Alpha TV Pro</p>
+    <p class="legal">
+      O Alpha TV Pro é um reprodutor de mídia. Não fornece, hospeda nem distribui
+      qualquer conteúdo, canal ou lista. O usuário é responsável pelo conteúdo que
+      acessa e pela legalidade do serviço que contratar.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── Única coisa que muda se você renomear o repositório ────────────────────
+  var GH_USUARIO = "brunoopaess22";
+  var GH_REPO    = "alpha-tv-pro";
+  // O arquivo publicado no Release PRECISA se chamar exatamente assim, sempre.
+  // É esse nome fixo que faz o link "latest" continuar valendo em toda versão.
+  var APK_NOME   = "AlphaTVPro.apk";
+
+  var LINK_APK = "https://github.com/" + GH_USUARIO + "/" + GH_REPO +
+                 "/releases/latest/download/" + APK_NOME;
+  var API      = "https://api.github.com/repos/" + GH_USUARIO + "/" + GH_REPO +
+                 "/releases/latest";
+
+  // Os botões apontam pro link fixo desde já: se a API falhar ou o visitante
+  // estiver com JS bloqueado, o download continua funcionando.
+  document.getElementById("btn-baixar").href   = LINK_APK;
+  document.getElementById("btn-baixar-2").href = LINK_APK;
+  document.getElementById("ano").textContent   = new Date().getFullYear();
+
+  // ── Abas de instalação ────────────────────────────────────────────────────
+  var abas = document.querySelectorAll(".aba");
+  abas.forEach(function(aba){
+    aba.addEventListener("click", function(){
+      abas.forEach(function(o){
+        var painel = document.getElementById(o.getAttribute("aria-controls"));
+        var ativa  = (o === aba);
+        o.setAttribute("aria-selected", ativa ? "true" : "false");
+        painel.hidden = !ativa;
+      });
+    });
+  });
+
+  // ── Versão vinda do GitHub ────────────────────────────────────────────────
+  // Sem backend e sem chave: a API pública do GitHub responde direto do navegador.
+  // Limite de 60 chamadas/hora POR IP do visitante — cada pessoa tem a sua cota,
+  // então tráfego alto não derruba isso.
+  function mb(bytes){ return (bytes / 1048576).toFixed(1).replace(".", ",") + " MB"; }
+
+  fetch(API, { headers: { "Accept": "application/vnd.github+json" } })
+    .then(function(r){
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function(d){
+      var versao = (d.tag_name || "").replace(/^v/i, "") || "—";
+      var data   = d.published_at
+        ? new Date(d.published_at).toLocaleDateString("pt-BR",
+            { day:"2-digit", month:"long", year:"numeric" })
+        : null;
+
+      var apk = (d.assets || []).filter(function(a){
+        return /\.apk$/i.test(a.name);
+      })[0];
+
+      var partes = ["Versão <strong>" + versao + "</strong>"];
+      if (apk && apk.size) partes.push("<strong>" + mb(apk.size) + "</strong>");
+      if (data)            partes.push("atualizado em <strong>" + data + "</strong>");
+
+      document.getElementById("meta").innerHTML = partes.join(" · ");
+      document.getElementById("selo-versao").textContent = versao;
+
+      // Se o arquivo do release tiver outro nome, usa a URL real dele em vez de
+      // deixar o botão apontando pra um link que daria 404.
+      if (apk && apk.browser_download_url && apk.name !== APK_NOME) {
+        document.getElementById("btn-baixar").href   = apk.browser_download_url;
+        document.getElementById("btn-baixar-2").href = apk.browser_download_url;
+      }
+    })
+    .catch(function(){
+      document.getElementById("meta").innerHTML =
+        "Download direto · sem cadastro · sem anúncios";
+      document.getElementById("aviso-erro").style.display = "block";
+    });
+})();
+</script>
+</body>
+</html>
