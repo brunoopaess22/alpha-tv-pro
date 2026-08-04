@@ -533,8 +533,12 @@
 
   var LINK_APK = "https://github.com/" + GH_USUARIO + "/" + GH_REPO +
                  "/releases/latest/download/" + APK_NOME;
-  var API      = "https://api.github.com/repos/" + GH_USUARIO + "/" + GH_REPO +
-                 "/releases/latest";
+
+  // NÃO chamamos api.github.com daqui. A API pública permite 60 chamadas/hora POR IP,
+  // e no Brasil muito cliente sai por CGNAT (vários assinantes no mesmo IP público) —
+  // dava pra estourar a cota com movimento normal e o visitante via o aviso de erro.
+  // /api/versao consulta o GitHub no servidor e fica guardada no CDN por 15 min.
+  var API = "/api/versao";
 
   // Os botões apontam pro link fixo desde já: se a API falhar ou o visitante
   // estiver com JS bloqueado, o download continua funcionando.
@@ -561,34 +565,31 @@
   // então tráfego alto não derruba isso.
   function mb(bytes){ return (bytes / 1048576).toFixed(1).replace(".", ",") + " MB"; }
 
-  fetch(API, { headers: { "Accept": "application/vnd.github+json" } })
+  fetch(API)
     .then(function(r){
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
     .then(function(d){
-      var versao = (d.tag_name || "").replace(/^v/i, "") || "—";
-      var data   = d.published_at
-        ? new Date(d.published_at).toLocaleDateString("pt-BR",
+      if (d.erro) throw new Error(d.erro);
+      var versao = d.versao || "—";
+      var data   = d.publicado
+        ? new Date(d.publicado).toLocaleDateString("pt-BR",
             { day:"2-digit", month:"long", year:"numeric" })
         : null;
 
-      var apk = (d.assets || []).filter(function(a){
-        return /\.apk$/i.test(a.name);
-      })[0];
-
       var partes = ["Versão <strong>" + versao + "</strong>"];
-      if (apk && apk.size) partes.push("<strong>" + mb(apk.size) + "</strong>");
-      if (data)            partes.push("atualizado em <strong>" + data + "</strong>");
+      if (d.tamanho) partes.push("<strong>" + mb(d.tamanho) + "</strong>");
+      if (data)      partes.push("atualizado em <strong>" + data + "</strong>");
 
       document.getElementById("meta").innerHTML = partes.join(" · ");
       document.getElementById("selo-versao").textContent = versao;
 
       // Se o arquivo do release tiver outro nome, usa a URL real dele em vez de
       // deixar o botão apontando pra um link que daria 404.
-      if (apk && apk.browser_download_url && apk.name !== APK_NOME) {
-        document.getElementById("btn-baixar").href   = apk.browser_download_url;
-        document.getElementById("btn-baixar-2").href = apk.browser_download_url;
+      if (d.url && d.nomeArquivo && d.nomeArquivo !== APK_NOME) {
+        document.getElementById("btn-baixar").href   = d.url;
+        document.getElementById("btn-baixar-2").href = d.url;
       }
     })
     .catch(function(){
