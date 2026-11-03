@@ -13,10 +13,20 @@
 const REPO = "brunoopaess22/alpha-tv-pro";
 
 export default async function handler(req, res) {
-  // s-maxage=900   : o CDN guarda por 15 min e responde todo mundo de lá.
+  // s-maxage=300   : o CDN guarda por 5 min e responde todo mundo de lá.
   // stale-while-revalidate=86400 : se o GitHub cair, continua servindo o último valor
   //   bom por até 24h enquanto tenta atualizar por baixo. O site não quebra junto.
-  res.setHeader("Cache-Control", "public, s-maxage=900, stale-while-revalidate=86400");
+  //
+  // ERA 900 (15 min). Baixado em 03/11/2026: no lançamento da 4.4.49 a TV box consultou
+  // dentro dessa janela, recebeu a versão ANTIGA, concluiu "ja estou atualizado" e ainda
+  // armou o intervalo de 6h do app — o aviso de atualizacao simplesmente nao apareceu.
+  //
+  // Por que 300 e nao 60: o limite do GitHub sem token e de 60 chamadas/hora POR IP, e as
+  // funcoes da Vercel saem todas pelo mesmo bloco de IPs. O gasto e
+  // (3600/s-maxage) x (numero de PoPs do CDN). Com 300s e ~4 PoPs da ~48/hora, abaixo do
+  // teto. Com 120s passaria de 100/hora e voltaria o 403 que derrubou o site em 03/08/2026.
+  // Pra descer abaixo disso seria preciso um token do GitHub (teto vai pra 5.000/hora).
+  res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=86400");
 
   try {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
